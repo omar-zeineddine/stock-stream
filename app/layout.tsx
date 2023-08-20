@@ -1,5 +1,7 @@
 "use client";
+import { Providers } from "./redux/provider";
 import Footer from "./components/Footer";
+import Sidebar from "./components/Sidebar";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -13,16 +15,17 @@ export default function RootLayout({
       <body>
         <div className="flex flex-col min-h-screen">
           <div className="flex flex-grow">
+            <Sidebar />
             <div className="flex flex-col flex-grow ">
               <div
-                className="flex-grow "
+                className="flex-grow overflow-y-auto "
                 style={{
                   background: "#f5f5f5",
                 }}
               >
-                {children}
+                <Providers>{children}</Providers>
               </div>
-              <Footer className="absolute bottom-0 left-0 w-full" />
+              <Footer className="bottom-0 " />
             </div>
           </div>
         </div>
