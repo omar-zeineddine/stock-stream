@@ -25,7 +25,6 @@ export const stocksNewsApi = createApi({
   reducerPath: "stocksNewsApi",
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    // Define your endpoint with a unique name
     fetchStocksNews: builder.query({
       query: () => createRequest({ url: "/news/list", performanceId: "0P0000OQN8" }),
     }),
