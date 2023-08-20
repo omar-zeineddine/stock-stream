@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useFetchTimeSeriesQuery } from "../redux/features/stockPerformanceApi";
-import LineChart from "../components/LineChart";
 import HeadingSection from "../components/HeadingSection";
+import LineChartSingle from "../components/SingleLineChart";
 
 const TimeSeriesChart: React.FC = () => {
   const [symbol, setSymbol] = useState<string>("");
@@ -90,7 +90,7 @@ const TimeSeriesChart: React.FC = () => {
       {/* {data && <LineChart data={data} />}{" "} */}
       {/* Replace LineChart with your chart component */}
       <div className="w-1/2 flex justify-center items-center mx-auto">
-        <LineChart />
+        <LineChartSingle />
       </div>
     </div>
   );

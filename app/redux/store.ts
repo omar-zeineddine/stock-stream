@@ -1,16 +1,15 @@
 import { configureStore, } from "@reduxjs/toolkit";
 
-import { stocksNewsApi } from "./features/StockNewsApi";
+import { stocksApi } from "./features/stockPerformanceApi";
+import { stocksNewsApi } from "./features/stockNewsApi";
 
 export const store = configureStore({
   reducer: {
+    [stocksApi.reducerPath]: stocksApi.reducer,
     [stocksNewsApi.reducerPath]: stocksNewsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
+      .concat(stocksApi.middleware)
       .concat(stocksNewsApi.middleware),
 });
-
-
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppDispatch = typeof store.dispatch;
