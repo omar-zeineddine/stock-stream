@@ -11,8 +11,6 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-import { faker } from "@faker-js/faker";
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,31 +29,49 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Chart.js Line Chart",
+      text: "stock portfolio performance over one year",
     },
   },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: labels.map(() => faker.number.int({ min: -1000, max: 1000 })),
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-    {
-      label: "Dataset 2",
-      data: labels.map(() => faker.number.int({ min: -1000, max: 1000 })),
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-    },
-  ],
+type Props = {
+  chartData: [number, number][];
 };
 
-const LineChart = () => <Line options={options} data={data} />;
+const LineChart: React.FC<Props> = (props: Props) => {
+  const labels = props.chartData.map((data) => {
+    const monthIndex = new Date(data[0]).getMonth();
+    return monthNames[monthIndex];
+  });
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Performance",
+        data: props.chartData.map((data) => data[1]),
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
+
+  console.log(props, data);
+  return <Line options={options} data={data} />;
+};
 
 export default LineChart;
