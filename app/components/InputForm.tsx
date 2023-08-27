@@ -69,6 +69,7 @@ const InputForm: React.FC<Props> = (props: Props) => {
   const generateStockHistory = async (values: Investment[]) => {
     const res = await getStockHistory(values, totalInvestment);
     setChartData(res);
+    props.setChartData(res);
   };
 
   return (
