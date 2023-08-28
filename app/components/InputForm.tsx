@@ -80,8 +80,8 @@ const InputForm: React.FC<Props> = (props: Props) => {
           (sum, stock) => sum + Number(stock.weight),
           0
         );
-        if (totalWeight > 100) {
-          setStatus("Total weight cannot exceed 100%");
+        if (totalWeight !== 100) {
+          setStatus("Total weight should be equal to 100");
         } else {
           setStatus("");
           generateStockHistory(values.stockList);
@@ -113,10 +113,10 @@ const InputForm: React.FC<Props> = (props: Props) => {
           <FieldArray name="stockList">
             {({ remove, push }) => (
               <>
-                <div className="w-1/2 grid gap-4 mb-6 md:grid-cols-2 p-4 mx-auto rounded-lg dark:bg-gray-900 dark:border-gray-700">
+                <div className="w-1/2 flex flex-col gap-3 mb-6 p-4 mx-auto rounded-lg dark:bg-gray-900 dark:border-gray-700">
                   {values.stockList.map((_, index) => (
-                    <>
-                      <div key={index}>
+                    <div key={index} className="flex justify-around">
+                      <div>
                         <label
                           htmlFor={`stock-${index}`}
                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -144,16 +144,16 @@ const InputForm: React.FC<Props> = (props: Props) => {
                             type="text"
                             id={`weight-${index}`}
                             name={`stockList[${index}].weight`}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
+                            className="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
                             placeholder="%"
                             required
                           />
 
                           {values.stockList.length > 1 && (
-                            <div className="flex items-center justify-center mt-2">
+                            <div className="mt-1">
                               <button
                                 type="button"
-                                className="ml-2 px-3 py-1 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                                className="ml-2  px-3 py-1 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-800"
                                 onClick={() => remove(index)}
                               >
                                 X
@@ -162,10 +162,9 @@ const InputForm: React.FC<Props> = (props: Props) => {
                           )}
                         </div>
                       </div>
-                    </>
+                    </div>
                   ))}
                 </div>
-
                 <div className="flex justify-center items-center gap-4">
                   {values.stockList.length < 5 && (
                     <button
