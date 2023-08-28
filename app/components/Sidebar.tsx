@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const Sidebar: React.FC = () => {
   const pathname = usePathname();
@@ -16,7 +17,13 @@ const Sidebar: React.FC = () => {
         <div className="flex justify-between items-center">
           <Link href="/" legacyBehavior>
             <a href="#">
-              <img className="w-auto h-16 sm:h-12" src="stocks.png" alt="" />
+              <Image
+                className="w-auto h-16 sm:h-12"
+                src="/stocks.png"
+                alt=""
+                width={64}
+                height={64}
+              />
             </a>
           </Link>
           <h2 className="font-semibold">Stock-Stream</h2>
