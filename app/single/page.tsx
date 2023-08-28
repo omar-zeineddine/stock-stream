@@ -34,7 +34,6 @@ const TimeSeriesChart: React.FC = () => {
   const handleTimePeriodChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    console.log(event.target.value);
     setTimePeriod(event.target.value);
   };
 

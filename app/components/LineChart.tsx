@@ -69,8 +69,6 @@ const LineChart: React.FC<Props> = (props: Props) => {
       },
     ],
   };
-
-  console.log(props, data);
   return <Line options={options} data={data} />;
 };
 

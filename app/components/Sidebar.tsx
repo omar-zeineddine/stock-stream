@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 
 const Sidebar: React.FC = () => {
   const pathname = usePathname();
-  console.log(pathname);
 
   const isActive = (path: string) => {
     return pathname === path;
