@@ -1,56 +1,8 @@
 import React from "react";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
-import axios from "axios";
-import { DateRange, Investment } from "../stock.interface";
-import { getDates, singularStockData } from "../utils";
+import { Investment } from "../stock.interface";
 
 const totalInvestment: number = 1000000; // 10,000 USD in cents
-
-const getStockHistory = async (
-  investment: Investment[],
-  amount: number
-): Promise<[number, number][]> => {
-  const dateRange: DateRange = getDates();
-
-  const allStockDataResp = await Promise.all(
-    investment.map((inv) => {
-      return singularStockData(
-        inv.name,
-        dateRange,
-        (amount * inv.weight) / 100
-      );
-    })
-  );
-
-  // console.log({ allStockDataResp });
-
-  // Length of the results
-  const l: number = allStockDataResp[0].results.length;
-
-  // chart data
-  const currentStockValue: [number, number][] = [];
-
-  // Extract the value for the current month
-  const extractCurrentValueForMonth = (allData: any, m: number): number => {
-    let currentValue = 0;
-    for (let i = 0; i <= allData.length - 1; i++) {
-      currentValue += allData[i].results[m].currentValue;
-    }
-    return Number(currentValue.toFixed(2));
-  };
-
-  // Runs a loop that goes through each stock and extract the individual values for each month and adds it up
-  for (let i = 0; i < l; i++) {
-    // [timestamp, sumOfALLStockValeForMonth]
-    currentStockValue.push([
-      allStockDataResp[0].results[i].timestamp,
-      extractCurrentValueForMonth(allStockDataResp, i),
-    ]);
-  }
-
-  // An array of array => [timestamp, sumOfALLStockValeForMonth][]
-  return currentStockValue;
-};
 
 type Props = {
   setChartData: React.Dispatch<React.SetStateAction<[number, number][]>>;
@@ -60,16 +12,31 @@ const InputForm: React.FC<Props> = (props: Props) => {
   const initialValues: Investment[] = [{ name: "", weight: 0 }];
   const [chartData, setChartData] = React.useState<[number, number][]>([]);
 
-  /* const handleAddStock = (values: Investment[]) => {
-    if (values.length < 5) {
-      values.push({ stock: "", weight: 0 });
-    }
-  }; */
-
   const generateStockHistory = async (values: Investment[]) => {
-    const res = await getStockHistory(values, totalInvestment);
-    setChartData(res);
-    props.setChartData(res);
+    try {
+      const response = await fetch("/api/stock-history", {
+        method: "POST",
+        body: JSON.stringify({
+          investment: values,
+          amount: totalInvestment,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log({ data });
+
+      if (data.success === true && data.code === 200) {
+        setChartData(data.stockHistory);
+        props.setChartData(data.stockHistory);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // todo: show error message
+    }
   };
 
   return (
