@@ -1,5 +1,4 @@
 "use client";
-import { Providers } from "./redux/provider";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
 import "./globals.css";
@@ -23,7 +22,7 @@ export default function RootLayout({
                   background: "#f5f5f5",
                 }}
               >
-                <Providers>{children}</Providers>
+                {children}
               </div>
               <Footer className="bottom-0 " />
             </div>

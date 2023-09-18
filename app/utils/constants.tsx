@@ -1,4 +1,4 @@
-import { AboutIcon, AnalysisIcon, NewsIcon } from "../utils/Icons";
+import { AboutIcon, AnalysisIcon } from "../utils/Icons";
 
 export const routes = [
   {
@@ -6,12 +6,6 @@ export const routes = [
     path: "/",
     href: "/",
     icon: <AnalysisIcon />,
-  },
-  {
-    label: "News",
-    path: "/news",
-    href: "/news",
-    icon: <NewsIcon />,
   },
   {
     label: "About",
