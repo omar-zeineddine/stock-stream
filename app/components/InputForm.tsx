@@ -7,6 +7,9 @@ const totalInvestment: number = 1000000; // 10,000 USD in cents
 
 type Props = {
   setChartData: React.Dispatch<React.SetStateAction<[number, number][]>>;
+  setShowChart: React.Dispatch<React.SetStateAction<boolean>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const InputForm: React.FC<Props> = (props: Props) => {
@@ -15,6 +18,7 @@ const InputForm: React.FC<Props> = (props: Props) => {
   const [message, setMessage] = React.useState<string>("");
 
   const generateStockHistory = async (values: Investment[]) => {
+    props.setLoading(true);
     setMessage("");
     try {
       const response = await axios.post("/api/stock-history", {
@@ -31,11 +35,16 @@ const InputForm: React.FC<Props> = (props: Props) => {
       if (data.success === true && data.code === 200) {
         setChartData(data.stockHistory);
         props.setChartData(data.stockHistory);
+        props.setShowChart(true);
       } else {
         setMessage(data.message);
+        props.setShowChart(false);
       }
     } catch (error) {
       console.error("Error:", error);
+      props.setShowChart(false);
+    } finally {
+      props.setLoading(false);
     }
   };
 
