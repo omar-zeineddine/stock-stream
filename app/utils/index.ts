@@ -42,18 +42,25 @@ export const singularStockData = async (
     const resp = await axios.get<ApiResponse>(
       `https://api.polygon.io/v2/aggs/ticker/${stockName}/range/1/month/${dates[0]}/${dates[1]}?adjusted=false&sort=asc&limit=50000&apiKey=${process.env.NEXT_PUBLIC_POLYGON_API_KEY}`
     );
-    let noOfStock = 0;
-    for (let i = 0; i < resp.data.results.length; i++) {
-      if (i == 0) {
-        noOfStock = Number((amount / 100 / resp.data.results[i].o).toFixed(2));
+    // validate the response and check if it contains the expected data
+    if (resp.data && resp.data.results) {
+      let noOfStock = 0;
+      for (let i = 0; i < resp.data.results.length; i++) {
+        if (i == 0) {
+          noOfStock = Number(
+            (amount / 100 / resp.data.results[i].o).toFixed(2)
+          );
+        }
+        const currentValue = Number(
+          (resp.data.results[i].c * noOfStock).toFixed(2)
+        );
+        stockData.results.push({
+          currentValue,
+          timestamp: resp.data.results[i].t,
+        });
       }
-      const currentValue = Number(
-        (resp.data.results[i].c * noOfStock).toFixed(2)
-      );
-      stockData.results.push({
-        currentValue,
-        timestamp: resp.data.results[i].t,
-      });
+    } else {
+      throw new Error("Invalid response format from Polygon API");
     }
   } catch (e) {
     console.warn(`${stockName} data fetching failed`);
