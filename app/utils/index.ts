@@ -61,12 +61,44 @@ export const singularStockData = async (
   return stockData;
 };
 
+// Extract the value for the current month
+export const extractCurrentValueForMonth = (
+  allData: any,
+  m: number
+): number => {
+  let currentValue = 0;
+  for (let i = 0; i <= allData.length - 1; i++) {
+    currentValue += allData[i].results[m].currentValue;
+  }
+  return Number(currentValue.toFixed(2));
+};
+
+// generate stock trend based on the data
+export const generateStockTrendData = (allStockDataResp: SingleStockData[]) => {
+  // Length of the results
+  const l: number = allStockDataResp[0].results.length;
+
+  // chart data
+  const currentStockValue: [number, number][] = [];
+
+  // Runs a loop that goes through each stock and extract the individual values for each month and adds it up
+  for (let i = 0; i < l; i++) {
+    // [timestamp, sumOfALLStockValeForMonth]
+    currentStockValue.push([
+      allStockDataResp[0].results[i].timestamp,
+      extractCurrentValueForMonth(allStockDataResp, i),
+    ]);
+  }
+  return currentStockValue;
+};
+
 export const getStockHistory = async (
   investment: Investment[],
   amount: number
 ): Promise<[number, number][]> => {
   const dateRange: DateRange = getDates();
 
+  // make request to api
   const allStockDataResp = await Promise.all(
     investment.map((inv) => {
       return singularStockData(
@@ -77,30 +109,6 @@ export const getStockHistory = async (
     })
   );
 
-  // Length of the results
-  const l: number = allStockDataResp[0].results.length;
-
-  // chart data
-  const currentStockValue: [number, number][] = [];
-
-  // Extract the value for the current month
-  const extractCurrentValueForMonth = (allData: any, m: number): number => {
-    let currentValue = 0;
-    for (let i = 0; i <= allData.length - 1; i++) {
-      currentValue += allData[i].results[m].currentValue;
-    }
-    return Number(currentValue.toFixed(2));
-  };
-
-  // Runs a loop that goes through each stock and extract the individual values for each month and adds it up
-  for (let i = 0; i < l; i++) {
-    // [timestamp, sumOfALLStockValeForMonth]
-    currentStockValue.push([
-      allStockDataResp[0].results[i].timestamp,
-      extractCurrentValueForMonth(allStockDataResp, i),
-    ]);
-  }
-
   // An array of array => [timestamp, sumOfALLStockValeForMonth][]
-  return currentStockValue;
+  return generateStockTrendData(allStockDataResp);
 };
