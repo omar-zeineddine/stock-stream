@@ -1,5 +1,10 @@
-import { ApiResponse, SingleStockData, DateRange } from "../stock.interface";
 import axios from "axios";
+import {
+  ApiResponse,
+  SingleStockData,
+  DateRange,
+  Investment,
+} from "../stock.interface";
 
 /**
  * getDates - return a tuple of [1 year ago, today]
@@ -54,4 +59,48 @@ export const singularStockData = async (
     console.warn(`${stockName} data fetching failed`);
   }
   return stockData;
+};
+
+export const getStockHistory = async (
+  investment: Investment[],
+  amount: number
+): Promise<[number, number][]> => {
+  const dateRange: DateRange = getDates();
+
+  const allStockDataResp = await Promise.all(
+    investment.map((inv) => {
+      return singularStockData(
+        inv.name,
+        dateRange,
+        (amount * inv.weight) / 100
+      );
+    })
+  );
+
+  // Length of the results
+  const l: number = allStockDataResp[0].results.length;
+
+  // chart data
+  const currentStockValue: [number, number][] = [];
+
+  // Extract the value for the current month
+  const extractCurrentValueForMonth = (allData: any, m: number): number => {
+    let currentValue = 0;
+    for (let i = 0; i <= allData.length - 1; i++) {
+      currentValue += allData[i].results[m].currentValue;
+    }
+    return Number(currentValue.toFixed(2));
+  };
+
+  // Runs a loop that goes through each stock and extract the individual values for each month and adds it up
+  for (let i = 0; i < l; i++) {
+    // [timestamp, sumOfALLStockValeForMonth]
+    currentStockValue.push([
+      allStockDataResp[0].results[i].timestamp,
+      extractCurrentValueForMonth(allStockDataResp, i),
+    ]);
+  }
+
+  // An array of array => [timestamp, sumOfALLStockValeForMonth][]
+  return currentStockValue;
 };

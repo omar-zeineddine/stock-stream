@@ -1,60 +1,24 @@
 import { NextResponse } from "next/server";
-import { DateRange, Investment } from "@/app/stock.interface";
-import { getDates, singularStockData } from "@/app/utils";
-
-const getStockHistory = async (
-  investment: Investment[],
-  amount: number
-): Promise<[number, number][]> => {
-  const dateRange: DateRange = getDates();
-
-  const allStockDataResp = await Promise.all(
-    investment.map((inv) => {
-      return singularStockData(
-        inv.name,
-        dateRange,
-        (amount * inv.weight) / 100
-      );
-    })
-  );
-
-  // Length of the results
-  const l: number = allStockDataResp[0].results.length;
-
-  // chart data
-  const currentStockValue: [number, number][] = [];
-
-  // Extract the value for the current month
-  const extractCurrentValueForMonth = (allData: any, m: number): number => {
-    let currentValue = 0;
-    for (let i = 0; i <= allData.length - 1; i++) {
-      currentValue += allData[i].results[m].currentValue;
-    }
-    return Number(currentValue.toFixed(2));
-  };
-
-  // Runs a loop that goes through each stock and extract the individual values for each month and adds it up
-  for (let i = 0; i < l; i++) {
-    // [timestamp, sumOfALLStockValeForMonth]
-    currentStockValue.push([
-      allStockDataResp[0].results[i].timestamp,
-      extractCurrentValueForMonth(allStockDataResp, i),
-    ]);
-  }
-
-  // An array of array => [timestamp, sumOfALLStockValeForMonth][]
-  return currentStockValue;
-};
+import { getStockHistory } from "@/app/utils";
 
 export async function POST(req: Request) {
   if (req.method === "POST") {
     try {
       const body = await req.json();
-      console.log({ body });
       const { investment, amount } = body;
 
-      const dateRange = getDates();
+      if (!investment || !amount)
+        return new NextResponse("Invalid request", { status: 400 });
+
       const stockHistory = await getStockHistory(investment, amount);
+
+      if (stockHistory.length === 0 || !stockHistory[0]) {
+        return NextResponse.json({
+          code: 400,
+          message: "stock history data could not be retrieved",
+          success: false,
+        });
+      }
 
       return NextResponse.json({
         code: 200,

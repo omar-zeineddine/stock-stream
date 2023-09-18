@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
 import { Investment } from "../stock.interface";
+import axios from "axios";
 
 const totalInvestment: number = 1000000; // 10,000 USD in cents
 
@@ -11,31 +12,30 @@ type Props = {
 const InputForm: React.FC<Props> = (props: Props) => {
   const initialValues: Investment[] = [{ name: "", weight: 0 }];
   const [chartData, setChartData] = React.useState<[number, number][]>([]);
+  const [message, setMessage] = React.useState<string>("");
 
   const generateStockHistory = async (values: Investment[]) => {
+    setMessage("");
     try {
-      const response = await fetch("/api/stock-history", {
-        method: "POST",
-        body: JSON.stringify({
-          investment: values,
-          amount: totalInvestment,
-        }),
+      const response = await axios.post("/api/stock-history", {
+        investment: values,
+        amount: totalInvestment,
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      console.log({ data });
+      const data = response.data;
 
       if (data.success === true && data.code === 200) {
         setChartData(data.stockHistory);
         props.setChartData(data.stockHistory);
+      } else {
+        setMessage(data.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      // todo: show error message
     }
   };
 
@@ -158,7 +158,7 @@ const InputForm: React.FC<Props> = (props: Props) => {
         )}
       </Formik>
       <div className="space-y-4 mt-4 text-center text-black">
-        Messages content
+        {message ? <p className="text-red-400 ">{message}</p> : null}
       </div>
     </>
   );
