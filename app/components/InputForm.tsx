@@ -1,50 +1,55 @@
 import React from "react";
-import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
+import { Formik, Field, FieldArray, Form, FieldArrayRenderProps } from "formik";
 import { Investment } from "../stock.interface";
 import axios from "axios";
 
 const totalInvestment: number = 1000000; // 10,000 USD in cents
 
 type Props = {
-  setChartData: React.Dispatch<React.SetStateAction<[number, number][]>>;
-  setShowChart: React.Dispatch<React.SetStateAction<boolean>>;
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmit: (data: {
+    chartData: [number, number][];
+    showChart: boolean;
+    loading: boolean;
+  }) => void;
 };
 
 const InputForm: React.FC<Props> = (props: Props) => {
   const initialValues: Investment[] = [{ name: "", weight: 0 }];
-  const [chartData, setChartData] = React.useState<[number, number][]>([]);
   const [message, setMessage] = React.useState<string>("");
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const generateStockHistory = async (values: Investment[]) => {
-    props.setLoading(true);
     setMessage("");
+    props.onSubmit({
+      loading: true,
+      chartData: [],
+      showChart: false,
+    });
     try {
       const response = await axios.post("/api/stock-history", {
         investment: values,
         amount: totalInvestment,
       });
-
       if (response.status !== 200) {
         throw new Error("Network response was not ok");
       }
-
       const data = response.data;
-
       if (data.success === true && data.code === 200) {
-        setChartData(data.stockHistory);
-        props.setChartData(data.stockHistory);
-        props.setShowChart(true);
+        props.onSubmit({
+          chartData: data.stockHistory,
+          showChart: true,
+          loading: false,
+        });
       } else {
         setMessage(data.message);
-        props.setShowChart(false);
+        props.onSubmit({
+          chartData: [],
+          showChart: false,
+          loading: false,
+        });
       }
     } catch (error) {
       console.error("Error:", error);
-      props.setShowChart(false);
-    } finally {
-      props.setLoading(false);
     }
   };
 
@@ -53,12 +58,20 @@ const InputForm: React.FC<Props> = (props: Props) => {
       <Formik
         initialValues={{ stockList: initialValues }}
         onSubmit={(values, { setStatus }) => {
+          // Validate if any investment is empty or weight is negative
+          const invalidInvestments = values.stockList.some(
+            (stock) => stock.name === "" || stock.weight < 0
+          );
           const totalWeight = values.stockList.reduce(
             (sum, stock) => sum + Number(stock.weight),
             0
           );
-          if (totalWeight !== 100) {
-            setStatus("Total weight should be equal to 100");
+          if (invalidInvestments) {
+            setStatus(
+              "Invalid investments: Please provide valid stock symbols and non-negative weights."
+            );
+          } else if (totalWeight !== 100) {
+            setStatus("Total weight should be equal to 100.");
           } else {
             setStatus("");
             generateStockHistory(values.stockList);
@@ -88,7 +101,7 @@ const InputForm: React.FC<Props> = (props: Props) => {
               </div>
             )}
             <FieldArray name="stockList">
-              {({ remove, push }) => (
+              {({ remove, push }: FieldArrayRenderProps) => (
                 <>
                   <div className="w-1/2 flex flex-col gap-3 mb-6 p-4 mx-auto rounded-lg dark:bg-gray-900 dark:border-gray-700">
                     {values.stockList.map((_, index) => (
