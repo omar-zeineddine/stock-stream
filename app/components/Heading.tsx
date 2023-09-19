@@ -1,11 +1,11 @@
 import React from "react";
 
-type HeadingSectionProps = {
+type HeadingProps = {
   title?: string;
   subtitle?: string;
 };
 
-const HeadingSection: React.FC<HeadingSectionProps> = ({ title, subtitle }) => {
+const Heading: React.FC<HeadingProps> = ({ title, subtitle }) => {
   return (
     <section>
       <div className="text-center max-w-xl mx-auto">
@@ -25,4 +25,4 @@ const HeadingSection: React.FC<HeadingSectionProps> = ({ title, subtitle }) => {
   );
 };
 
-export default HeadingSection;
+export default Heading;

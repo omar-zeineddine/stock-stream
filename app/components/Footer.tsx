@@ -18,13 +18,6 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             </Link>
           </div>
           <div className="px-5 py-2">
-            <Link href="/news" legacyBehavior>
-              <a className="text-base leading-6 text-white hover:text-gray-400 underline">
-                News
-              </a>
-            </Link>
-          </div>
-          <div className="px-5 py-2">
             <Link href="/about" legacyBehavior>
               <a className="text-base leading-6 text-white hover:text-gray-400 underline">
                 About

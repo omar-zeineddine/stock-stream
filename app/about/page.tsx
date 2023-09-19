@@ -1,10 +1,10 @@
 import React from "react";
-import HeadingSection from "../components/HeadingSection";
+import Heading from "../components/Heading";
 
 const AboutPage: React.FC = () => {
   return (
     <main className="bg-gray-100 min-h-screen p-4">
-      <HeadingSection
+      <Heading
         title="About Stock News"
         subtitle="Latest stock news headlines from around the web."
       />
