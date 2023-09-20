@@ -10,10 +10,10 @@ export const stockValidationSchema = Yup.object().shape({
         .required("Stock Symbol is required")
         .typeError("Stock Symbol must be a string"),
       weight: Yup.number()
+        .required("Weight is required")
         .typeError("Weight must be a number")
         .min(0, "Weight cannot be less than 0")
-        .max(100, "Weight cannot be greater than 100")
-        .required("Weight is required"),
+        .max(100, "Weight cannot be greater than 100"),
     })
   ),
 });
