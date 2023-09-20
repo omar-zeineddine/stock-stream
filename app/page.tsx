@@ -4,12 +4,7 @@ import LineChart from "./components/LineChart";
 import InputForm from "./components/InputForm";
 import { useState } from "react";
 import Spinner from "./components/Spinner";
-
-type FormSubmitData = {
-  chartData: [number, number][];
-  showChart: boolean;
-  loading: boolean;
-};
+import { FormSubmitData } from "./stock.interface";
 
 export default function Home() {
   const [chartData, setChartData] = useState<[number, number][]>([]);

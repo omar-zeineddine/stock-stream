@@ -12,16 +12,13 @@ import { Investment } from "@/app/stock.interface";
 import axios from "axios";
 import { stockValidationSchema } from "@/app/utils/schemas/index";
 import FormErrorMessage from "@/app/components/FormErrorMessage";
+import { FormSubmitData } from "@/app/stock.interface";
 
-type Props = {
-  onSubmit: (data: {
-    chartData: [number, number][];
-    showChart: boolean;
-    loading: boolean;
-  }) => void;
-};
+interface InputFormProps {
+  onSubmit: (data: FormSubmitData) => void;
+}
 
-const InputForm: React.FC<Props> = ({ onSubmit }) => {
+const InputForm = ({ onSubmit }: InputFormProps) => {
   const initialValues: Investment[] = [{ name: "", weight: 0 }];
   const [message, setMessage] = useState("");
 

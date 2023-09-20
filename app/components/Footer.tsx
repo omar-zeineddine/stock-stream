@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
 
-type FooterProps = {
+interface FooterProps {
   className?: string;
-};
+}
 
-const Footer: React.FC<FooterProps> = ({ className }) => {
+const Footer = ({ className }: FooterProps) => {
   return (
     <section className={`dark:bg-gray-900 dark:border-gray-700 ${className}`}>
       <div className="max-w-screen-xl px-4 py-3 mx-auto space-y-2 overflow-hidden sm:px-6 lg:px-8">

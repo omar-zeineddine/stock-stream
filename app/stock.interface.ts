@@ -35,3 +35,9 @@ export interface SingleStockData {
 }
 
 export type DateRange = [string, string];
+
+export interface FormSubmitData {
+  chartData: [number, number][];
+  showChart: boolean;
+  loading: boolean;
+}
