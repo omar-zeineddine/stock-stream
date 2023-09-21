@@ -7,7 +7,7 @@ const StockInputField = ({
   index: number;
   onRemove: () => void;
 }) => (
-  <div key={index} className="flex justify-around ">
+  <div key={index} className="flex justify-around">
     <div>
       <label
         htmlFor={`stock-${index}`}
@@ -51,7 +51,7 @@ const StockInputField = ({
             <button
               type="button"
               className="ml-2  px-3 py-1 text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-              onClick={() => onRemove()}
+              onClick={onRemove}
             >
               X
             </button>

@@ -21,7 +21,7 @@ const Sidebar: React.FC = () => {
               <Image
                 className="w-auto h-16 sm:h-12"
                 src="/stocks.png"
-                alt=""
+                alt="logo"
                 width={64}
                 height={64}
               />
@@ -34,8 +34,8 @@ const Sidebar: React.FC = () => {
             {routes.map((route) => (
               <Link href={route.href} key={route.href} legacyBehavior>
                 <a
-                  className={`flex items-center px-4 py-2 mt-5  transition-colors duration-300 transform rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700  ${
-                    isActive(route.path) ? "dark:bg-gray-800 " : ""
+                  className={`flex items-center px-4 py-2 mt-5  transition-colors duration-300 transform rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
+                    isActive(route.path) ? "dark:bg-gray-800 bg-gray-100" : ""
                   }`}
                 >
                   {route.icon}

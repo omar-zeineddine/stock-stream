@@ -89,9 +89,9 @@ const InputForm = ({ onSubmit }: InputFormProps) => {
           }
         }}
       >
-        {({ values, setValues, status, setStatus }) => (
+        {({ values, setValues, status }) => (
           <Form>
-            {status ? <FormErrorMessage status={status} /> : null}
+            {status && <FormErrorMessage status={status} />}
             <FieldArray name="stockList">
               {({ remove, push }: FieldArrayRenderProps) => (
                 <>
@@ -115,7 +115,7 @@ const InputForm = ({ onSubmit }: InputFormProps) => {
                           });
                         }}
                       />
-                      <div className="">
+                      <div>
                         <ErrorMessage
                           name="totalInvestment"
                           component="div"
@@ -157,7 +157,7 @@ const InputForm = ({ onSubmit }: InputFormProps) => {
         )}
       </Formik>
       <div className="space-y-4 mt-4 text-center text-black">
-        {message ? <p className="text-red-400 ">{message}</p> : null}
+        {message && <p className="text-red-400">{message}</p>}
       </div>
     </>
   );
